@@ -8,6 +8,7 @@ class LocationController extends GetxController {
   var currentPosition = const LatLng(0.0, 0.0).obs;
   var markers = <Marker>[].obs;
   late GoogleMapController mapController;
+  var isTrackingEnabled = true.obs;
 
   @override
   void onInit() {
@@ -22,7 +23,7 @@ class LocationController extends GetxController {
       locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high, distanceFilter: 100),
     ).listen((Position? position) {
-      if (position != null) {
+      if (isTrackingEnabled.value && position != null) {
         currentPosition.value = LatLng(position.latitude, position.longitude);
         _addMarker(currentPosition.value);
       }

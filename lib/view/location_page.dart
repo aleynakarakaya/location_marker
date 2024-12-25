@@ -11,22 +11,37 @@ class LocationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() {
-        if (locationController.currentPosition.value.latitude == 0.0 &&
-            locationController.currentPosition.value.longitude == 0.0) {
-          return const Center(child: CircularProgressIndicator());
-        } else {
-          return GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: locationController.currentPosition.value,
-              zoom: 18.0,
-            ),
-            onMapCreated: locationController.setMapController,
-            markers: Set<Marker>.of(locationController.markers),
-            myLocationEnabled: true,
-          );
-        }
-      }),
-    );
+        body: Stack(
+      children: [
+        Obx(() {
+          if (locationController.currentPosition.value.latitude == 0.0 &&
+              locationController.currentPosition.value.longitude == 0.0) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: locationController.currentPosition.value,
+                zoom: 18.0,
+              ),
+              onMapCreated: locationController.setMapController,
+              markers: Set<Marker>.of(locationController.markers),
+              myLocationEnabled: true,
+            );
+          }
+        }),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 95.0),
+            child: FloatingActionButton.extended(
+                onPressed: () {
+                  locationController.isTrackingEnabled.toggle();
+                },
+                label: Obx(() => Text(
+                    locationController.isTrackingEnabled.value ? "Location Access Enabled" : "Location Access Disabled"))),
+          ),
+        ),
+      ],
+    ));
   }
 }
