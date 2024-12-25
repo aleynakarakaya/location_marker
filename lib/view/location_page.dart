@@ -12,13 +12,20 @@ class LocationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() {
-        return GoogleMap(
-          initialCameraPosition: CameraPosition(
-              target: locationController.currentPosition.value, zoom: 14.0),
-              onMapCreated: locationController.setMapController,
-              markers: Set<Marker>.of(locationController.markers),
-              myLocationEnabled: true,
-        );
+        if (locationController.currentPosition.value.latitude == 0.0 &&
+            locationController.currentPosition.value.longitude == 0.0) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          return GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: locationController.currentPosition.value,
+              zoom: 18.0,
+            ),
+            onMapCreated: locationController.setMapController,
+            markers: Set<Marker>.of(locationController.markers),
+            myLocationEnabled: true,
+          );
+        }
       }),
     );
   }
