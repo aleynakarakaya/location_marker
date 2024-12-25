@@ -34,13 +34,33 @@ class LocationPage extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 95.0),
-            child: FloatingActionButton.extended(
-                onPressed: () {
-                  locationController.isTrackingEnabled.toggle();
-                },
-                label: Obx(() => Text(locationController.isTrackingEnabled.value
-                    ? StringConstants.locationAccessEnabled
-                    : StringConstants.locationAccessDenied))),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FloatingActionButton.extended(
+                    onPressed: () {
+                      locationController.isTrackingEnabled.toggle();
+                    },
+                    label: Obx(() => Text(
+                        locationController.isTrackingEnabled.value
+                            ? StringConstants.locationAccessEnabled
+                            : StringConstants.locationAccessDenied,
+                        style: const TextStyle(color: Colors.black87)))),
+                const SizedBox(
+                  width: 10,
+                ),
+                FloatingActionButton.extended(
+                  onPressed: () {
+                    locationController.clearMarkers();
+                  },
+                  label: const Text(
+                    StringConstants.clearMarkers,
+                    style: TextStyle(color: Colors.black87),
+                  ),
+                  backgroundColor: Colors.amberAccent,
+                ),
+              ],
+            ),
           ),
         ),
       ],

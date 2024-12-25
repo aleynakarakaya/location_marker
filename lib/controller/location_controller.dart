@@ -35,6 +35,10 @@ class LocationController extends GetxController {
     mapController = controller;
   }
 
+  void clearMarkers() {
+    markers.clear();
+  }
+
   void _addMarker(LatLng position) {
     markers.add(
       Marker(
@@ -97,10 +101,9 @@ class LocationController extends GetxController {
         return Future.error(StringConstants.locationPermissionsDenied);
       }
     }
-    
+
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-        StringConstants.locationPermissionsPermanentlyDenied);
-    } 
+      return Future.error(StringConstants.locationPermissionsPermanentlyDenied);
+    }
   }
 }

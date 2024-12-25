@@ -10,4 +10,5 @@ class StringConstants {
   static const String locationAccessEnabled = 'Location Access Enabled';
   static const String locationAccessDenied = 'Location Access Denied';
   static const String asapRegular = 'Asap-Regular';
+  static const String clearMarkers = 'Clear Markers';
 }
