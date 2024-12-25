@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:location_marker/config/constants.dart';
 
 class LocationController extends GetxController {
   var currentPosition = const LatLng(0.0, 0.0).obs;
@@ -56,12 +57,12 @@ class LocationController extends GetxController {
             "${placemark.administrativeArea}, ${placemark.country}";
         Get.dialog(
           AlertDialog(
-            title: const Text("Address Information"),
+            title: const Text(StringConstants.addressInformation),
             content: Text(address),
             actions: [
               TextButton(
                 onPressed: () => Get.back(),
-                child: const Text("OK"),
+                child: const Text(StringConstants.ok),
               ),
             ],
           ),
@@ -70,12 +71,12 @@ class LocationController extends GetxController {
     } catch (e) {
       Get.dialog(
         AlertDialog(
-          title: const Text("Error"),
-          content: Text("Address information error: $e"),
+          title: const Text(StringConstants.error),
+          content: Text("${StringConstants.addressInformationError}: $e"),
           actions: [
             TextButton(
               onPressed: () => Get.back(),
-              child: const Text("Close"),
+              child: const Text(StringConstants.close),
             ),
           ],
         ),
@@ -86,20 +87,20 @@ class LocationController extends GetxController {
   Future<void> _handlePermissions() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      return Future.error(StringConstants.locationServicesDisabled);
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        return Future.error(StringConstants.locationPermissionsDenied);
       }
     }
     
     if (permission == LocationPermission.deniedForever) {
       return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
+        StringConstants.locationPermissionsPermanentlyDenied);
     } 
   }
 }

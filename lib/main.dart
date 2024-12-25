@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_marker/config/constants.dart';
 import 'package:location_marker/view/location_page.dart';
 import 'package:get/get.dart';
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
         useMaterial3: true,
-        fontFamily: "Asap-Regular",
+        fontFamily: StringConstants.asapRegular,
       ),
       home: LocationPage(),
     );

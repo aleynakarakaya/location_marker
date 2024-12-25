@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location_marker/config/constants.dart';
 import 'package:location_marker/controller/location_controller.dart';
 
 class LocationPage extends StatelessWidget {
@@ -37,8 +38,9 @@ class LocationPage extends StatelessWidget {
                 onPressed: () {
                   locationController.isTrackingEnabled.toggle();
                 },
-                label: Obx(() => Text(
-                    locationController.isTrackingEnabled.value ? "Location Access Enabled" : "Location Access Disabled"))),
+                label: Obx(() => Text(locationController.isTrackingEnabled.value
+                    ? StringConstants.locationAccessEnabled
+                    : StringConstants.locationAccessDenied))),
           ),
         ),
       ],
