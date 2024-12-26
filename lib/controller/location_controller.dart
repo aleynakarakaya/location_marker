@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:background_location/background_location.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -19,6 +20,10 @@ class LocationController extends GetxController {
 
   Future<void> _initializeLocationTracking() async {
     await _handlePermissions();
+
+    if (isTrackingEnabled.value) {
+      BackgroundLocation.startLocationService();
+    }
 
     Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
@@ -85,6 +90,16 @@ class LocationController extends GetxController {
           ],
         ),
       );
+    }
+  }
+
+  void toggleTracking() {
+    isTrackingEnabled.toggle();
+
+    if (isTrackingEnabled.value) {
+      BackgroundLocation.startLocationService();
+    } else {
+      BackgroundLocation.stopLocationService();
     }
   }
 

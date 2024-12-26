@@ -39,7 +39,7 @@ class LocationPage extends StatelessWidget {
               children: [
                 FloatingActionButton.extended(
                     onPressed: () {
-                      locationController.isTrackingEnabled.toggle();
+                      locationController.toggleTracking();
                     },
                     label: Obx(() => Text(
                         locationController.isTrackingEnabled.value
