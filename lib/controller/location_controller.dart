@@ -10,7 +10,9 @@ class LocationController extends GetxController {
   var currentPosition = const LatLng(0.0, 0.0).obs;
   var markers = <Marker>[].obs;
   late GoogleMapController mapController;
-  var isTrackingEnabled = true.obs;
+  var isTrackingEnabled = false.obs;
+  Rx<LocationPermission> locationPermissionStatus =
+      LocationPermission.denied.obs;
 
   @override
   void onInit() {
@@ -19,21 +21,22 @@ class LocationController extends GetxController {
   }
 
   Future<void> _initializeLocationTracking() async {
-    await _handlePermissions();
+    await handlePermissions();
 
     if (isTrackingEnabled.value) {
-      BackgroundLocation.startLocationService();
-    }
-
-    Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high, distanceFilter: 100),
-    ).listen((Position? position) {
-      if (isTrackingEnabled.value && position != null) {
-        currentPosition.value = LatLng(position.latitude, position.longitude);
-        _addMarker(currentPosition.value);
+      if (locationPermissionStatus.value != LocationPermission.whileInUse) {
+        BackgroundLocation.startLocationService();
       }
-    });
+      Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high, distanceFilter: 100),
+      ).listen((Position? position) {
+        if (isTrackingEnabled.value && position != null) {
+          currentPosition.value = LatLng(position.latitude, position.longitude);
+          _addMarker(currentPosition.value);
+        }
+      });
+    }
   }
 
   void setMapController(GoogleMapController controller) {
@@ -96,29 +99,28 @@ class LocationController extends GetxController {
   void toggleTracking() {
     isTrackingEnabled.toggle();
 
-    if (isTrackingEnabled.value) {
-      BackgroundLocation.startLocationService();
-    } else {
-      BackgroundLocation.stopLocationService();
+    if (locationPermissionStatus.value != LocationPermission.whileInUse) {
+      if (isTrackingEnabled.value) {
+        BackgroundLocation.startLocationService();
+      } else {
+        BackgroundLocation.stopLocationService();
+      }
     }
   }
 
-  Future<void> _handlePermissions() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error(StringConstants.locationServicesDisabled);
+  Future<void> handlePermissions() async {
+    locationPermissionStatus.value = await Geolocator.checkPermission();
+    if (locationPermissionStatus.value == LocationPermission.denied) {
+      locationPermissionStatus.value = await Geolocator.requestPermission();
     }
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error(StringConstants.locationPermissionsDenied);
-      }
+    if (locationPermissionStatus.value == LocationPermission.always ||
+        locationPermissionStatus.value == LocationPermission.whileInUse) {
+      isTrackingEnabled.value = true;
     }
+  }
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(StringConstants.locationPermissionsPermanentlyDenied);
-    }
+  Future<void> openSettings() async {
+    await Geolocator.openAppSettings();
   }
 }

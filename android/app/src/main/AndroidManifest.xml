@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:label="location_marker"
+        android:label="Location Marker"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
